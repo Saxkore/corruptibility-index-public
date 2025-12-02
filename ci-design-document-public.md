@@ -1,1211 +1,634 @@
 # CI_DESIGN_DOCUMENT_PUBLIC_V1.0.md
-**Version:** 1.0 (Internal Protected)  
+
+**Version:** 1.0 (Public Concept Overview)  
 **Author:** John Forrester  
-**Status:** Locked for IP Protection  
+**Status:** Documentation Only — No Algorithms or Implementation  
 **Last Updated:** December 2025
+
+---
+
+## 0. Public Document Disclaimer
+
+This document provides a **high-level, conceptual overview** of the Corruptibility Index (CI) and CI Score™ frameworks.
+
+It is intentionally limited to:
+
+- narrative descriptions,  
+- conceptual architecture, and  
+- non-technical explanations of metric families and subsystems.
+
+It does **not** disclose:
+
+- detailed formulas or algorithms,  
+- implementation logic,  
+- code, pseudocode, or data structures sufficient for replication,  
+- any proprietary normalization or scoring methods.
+
+All implementation details, including specific computation, model behavior, and code, are maintained separately in **internal, non-public artifacts**.
+
+This document is **not** a product specification and does **not** describe a working system. It is provided for conceptual understanding, research interest, and public transparency about the *intent* and *philosophy* of the CI framework.
 
 ---
 
 # 1. Introduction
 
 ## 1.1 Purpose of This Document
-This document defines the complete internal design architecture, metric system, subsystem framework, data-source model, scoring logic, and algorithmic strategies of the **Corruptibility Index (CI)** platform.  
-It is intended as an **internal-protected, IP-establishing artifact**, documenting the full conceptual and structural invention created by **John Forrester**.
 
-This file is written in pure Markdown (`.md`) and is suitable for:
-- inclusion in private Git repositories,
-- submission as evidence of prior invention,
-- supporting trademark filings for CI product lines,
-- internal engineering onboarding,
-- internal legal/strategy review.
+This document describes the **conceptual design** of the **Corruptibility Index (CI)** framework and its related CI Score™ concept. Its purpose is to:
+
+- explain the overall **architecture and subsystems**,  
+- describe the **metric families** at a high level,  
+- outline the **data-source categories** that may inform analysis, and  
+- articulate the **ethics and governance principles** behind CI.
+
+It is suitable for:
+
+- inclusion in public or documentation-only Git repositories,  
+- informing researchers, journalists, and analysts about the conceptual approach,  
+- supporting narrative framing for future scholarly or media engagement,  
+- demonstrating the originality and scope of the framework **without** exposing technical implementation.
 
 ## 1.2 Scope
-This Version 1.0 design document includes:
-- Finalized **CI-Core** metric set (11 metrics)
-- Canonical **CI Subsystem Architecture** (CI-Background, CI-Watch, CI-Screen, CI-Monitor)
-- Complete **Metric → Data Source → API** mapping
-- Internal-only **metric computation notes**
-- Normalization, scoring, and risk-model logic
-- Ethics, security, and misuse-prevention
-- Implementation notes, pseudocode patterns, and roadmap
+
+This Version 1.0 public design document includes:
+
+- A conceptual overview of the **CI-Core** metric set (11 metrics)  
+- A high-level description of the **CI subsystem architecture**  
+- Non-technical **metric family summaries** for CI-Background, CI-Watch, CI-Screen, and CI-Monitor  
+- A **conceptual** Metric → Data Source mapping (categories only)  
+- A narrative explanation of how data is generally transformed into interpretable signals  
+- Ethics, security, and misuse-prevention principles  
+- A conceptual roadmap for future evolution of the framework
+
+No code, formulas, or detailed scoring logic are included.
 
 ## 1.3 Intellectual Property Framing
-This document is structured to demonstrate:
-- **Originality** of conceptual framework
-- **Novelty** of subsystem architecture
-- **Non-obviousness** of metric interrelation
-- **Structured technical expression** suitable for copyright and invention record
 
-This is not a public-facing or marketing-facing document.  
-It contains internal, protected details of the system.
+This public document is intended to:
+
+- record the **conceptual structure** of the Corruptibility Index,  
+- outline the **novel combination** of metric families and subsystems,  
+- demonstrate the **breadth and originality** of the architecture, and  
+- create a public, timestamped reference for the system’s core ideas.
+
+It is **not** intended to be sufficient for replication of the internal scoring engine or any proprietary implementation.
 
 ---
 
 # 2. System Overview
 
 ## 2.1 High-Level Description
-The **Corruptibility Index (CI)** is a structured analytical scoring system that assesses the *corruption-risk profile* of public figures, political actors, appointees, and related entities.
 
-The system ingests heterogeneous data sources—financial records, political disclosures, network associations, real estate acquisitions, legal events, and media signals—and converts them into **risk metrics**, which are normalized, weighted, and aggregated into a single composite score.
+The **Corruptibility Index (CI)** is a conceptual framework for analyzing **corruption-risk patterns** related to public figures, political actors, appointees, and similar entities.
+
+At a high level, CI imagines ingesting diverse, public, legally accessible information such as:
+
+- financial and donation records,  
+- political disclosures and voting histories,  
+- real-estate and corporate ownership records,  
+- legal and regulatory events,  
+- media and public-interest signals,  
+- network and association structures,
+
+and transforming them into **interpretable risk-related signals** (metrics) that can be reviewed and compared.
+
+The CI Score™ is envisioned as a **high-level indicator** that summarizes multiple conceptual risk dimensions into a single, interpretable signal for institutional or research use. This document does not describe how such a score would be mathematically derived.
 
 ## 2.2 Design Principles
-1. **Modularity:** Metrics operate as independent, testable risk signals.
-2. **Explainability:** Each metric has clear diagnostic meaning.
-3. **Traceability:** All data sources tied to public registries or documented APIs.
-4. **Subsystem Extensibility:** Core scoring is just one product; the same architecture supports background checks, screening, monitoring, and long-term pattern tracking.
-5. **Non-Predictive:** CI measures *risk exposure*, not deterministic outcomes.
-6. **Defensibility:** Every metric yields interpretable, non-subjective inputs.
+
+The CI framework is guided by the following principles:
+
+1. **Modularity**  
+   Each metric family acts as a separate risk lens that can be considered independently.
+
+2. **Explainability**  
+   Each metric is intended to have a clear, human-understandable interpretation.
+
+3. **Traceability**  
+   Inputs, in principle, should come from documented, public, or verifiable sources.
+
+4. **Subsystem Extensibility**  
+   CI is envisioned as a platform with multiple use-case-specific subsystems, not a single monolithic score.
+
+5. **Non-Predictive**  
+   CI is about **risk exposure**, not predictions of guilt or future behavior.
+
+6. **Defensibility**  
+   Metrics are designed conceptually to avoid subjective or purely opinion-based inputs.
 
 ## 2.3 Architecture Summary
-At the top level, CI consists of:
 
-### **1. CI-Core**
-The 11 primary corruption-risk metrics (flagship score).
+At a conceptual level, CI includes:
 
-### **2. CI Subsystems**
-- **CI-Background:** static due-diligence and identity integrity
-- **CI-Watch:** dynamic continuous monitoring
-- **CI-Screen:** lightweight rapid filter
-- **CI-Monitor:** long-term drift and trend analysis
+1. **CI-Core**  
+   A family of 11 primary corruption-risk metrics intended to form a flagship conceptual index.
 
-### **3. Data Ingestion Layer**
-- Public APIs
-- Disclosures and registries
-- Network graph computation
-- Media and sentiment signals
-- Legal filings and enforcement records
+2. **CI Subsystems**  
+   Distinct, complementary subsystems built on the same conceptual foundation:
+   - **CI-Background** — Static due diligence and integrity framing  
+   - **CI-Watch** — Ongoing monitoring and alerting  
+   - **CI-Screen** — Lightweight screening for rapid checks  
+   - **CI-Monitor** — Long-term pattern and drift analysis  
 
-### **4. Transformation Layer**
-Cleansing → normalization → metric-specific preprocessing.
+3. **Data Ingestion Layer (Conceptual)**  
+   A notional intake layer for public data sources such as campaign-finance disclosures, property records, corporate registries, and media references.
 
-### **5. Metric Scoring Engine**
-Each metric produces a raw score, intermediate normalized score, and unitless risk signal.
+4. **Transformation Layer (Conceptual)**  
+   General processes by which raw public data would be reconciled, standardized, and associated with a subject.
 
-### **6. Aggregation Layer**
-Applies weights and interdependency rules, producing:
-- CI-Core Score
-- Subsystem-specific profiles
+5. **Metric Evaluation Layer (Conceptual)**  
+   Conceptual logic that turns *patterns in the data* into **interpretable risk signals** for each metric.
 
-### **7. Audit Trail & Metadata**
-Every signal is timestamped, sourced, and version-tracked.
+6. **Aggregation & Interpretation Layer (Conceptual)**  
+   A future point at which metric-level signals could be summarized into higher-level indicators, such as subsystem profiles and a CI Score™.
+
+7. **Audit & Context Layer**  
+   The principle that any future implementation should include clear context, sourcing, and interpretability.
+
+No technical implementation details are provided in this document.
 
 ---
 
-# 2A. CI Subsystem Architecture (Locked Down)
+# 2A. CI Subsystem Architecture (Conceptual)
 
-The CI platform consists of five subsystems, each with its own metric family, purpose, and output format. Documenting these subsystems here establishes them as **original, integral components** of the invention.
+The CI framework defines four major conceptual subsystems in addition to CI-Core. These are intended to cover different **use-cases** and **time horizons**, while sharing a common conceptual foundation.
 
-## **CI-Core**
-The flagship corruption-risk scoring engine.  
-Uses 11 finalized metrics (see Section 3).
+## CI-Core (Flagship Conceptual Index)
 
-## **CI-Background**
-Static due-diligence report generating:
-- Identity integrity
-- Litigation footprint
-- Historical financial transparency
-- Conflict-of-interest exposure
-- Reputation deviation
+- Represents the **11 primary corruption-risk metrics** (see Section 3).  
+- Envisions a composite indicator (CI Score™) summarizing these dimensions at a high level.  
+- Intended to provide a structured view of **systemic risk patterns**, not a judgment of individuals.
 
-Used for onboarding, vetting, research, and investigative prep.
+## CI-Background (Static Due-Diligence)
 
-## **CI-Watch**
-Continuous monitoring system providing:
-- Daily/weekly alerts
-- Media and sentiment acceleration signals
-- Real-time wealth-change anomalies
-- Sudden legal exposure
-- Network rewiring events
+Purpose: Provide a **static, context-rich profile** for a subject, suitable for:
 
-Functions as the “Bloomberg Terminal” layer of CI.
+- research,  
+- onboarding and vetting,  
+- editorial or investigative preparation,  
+- institutional background review.
 
-## **CI-Screen**
-Lightweight rapid filter for:
-- Hiring
-- Appointments
-- Volunteer/committee vetting
-- Board candidacy checks
+Example conceptual metric families within CI-Background:
 
-Low-cost, high-volume use case.
+- Identity integrity and alias continuity  
+- Employment and appointment legitimacy  
+- Litigation footprint  
+- Financial transparency framing  
+- Conflict-of-interest baseline  
+- Known risk associations  
+- Historical reputation deviation
 
-## **CI-Monitor**
-Long-term trend and drift analytics:
-- Multi-year wealth drift
-- Policy consistency curves
-- Donor/influence convergence
-- Real-estate accretion
-- Multi-cycle reputation gravitation
+## CI-Watch (Continuous Monitoring)
 
-Ideal for editorial, academic, or institutional tracking.
+Purpose: Provide **ongoing awareness** of emerging risk-related signals.
 
-**All subsystems derive from the same architectural foundation but employ unique metric sets.**  
-This supports strong IP defensibility.
+Conceptually, CI-Watch might surface patterns like:
 
----
+- sudden wealth or asset changes,  
+- new entity formations,  
+- shifts in policy alignment,  
+- emergent legal exposure,  
+- rapid changes in network relationships,  
+- spikes in media attention or investigative focus.
 
-# 3. Metric Architecture — CI-Core (Finalized 11 Metrics)
+CI-Watch is envisioned as an “alerting layer”, operating over time.
 
-This section documents the **official**, locked-in CI-Core metric set.  
-Each entry includes description + internal computation notes (not full formulas).
+## CI-Screen (Lightweight Rapid Filter)
 
----
+Purpose: Provide **fast, low-friction screening** for:
 
-## **3.1 Donor Metrics**
-Measures concentration, clustering, and anomaly patterns in donor behavior.
+- hiring and staffing decisions,  
+- campaign or volunteer vetting,  
+- preliminary board or appointment checks.
 
-### Inputs
-- Donation registries
-- PAC data
-- Recurrence patterns
-- Geographic clusters
+CI-Screen emphasizes:
 
-### Internal Notes
-- Use HHI-style concentration metrics
-- Detect donor “families” and shells
-- Compare donor diversity vs. expected baseline
+- a small set of key checks,  
+- low complexity,  
+- a clear, simple outcome (e.g., low/medium/high concern).
+
+## CI-Monitor (Long-Term Pattern Tracking)
+
+Purpose: Provide **long-horizon analytics** on:
+
+- wealth and asset drift,  
+- policy consistency over time,  
+- convergence of donors and influencers,  
+- network centrality and influence movement,  
+- sustained legal or reputational “background noise”.
+
+CI-Monitor is conceptually oriented towards **multi-year, systemic trends**, rather than short-term events.
 
 ---
 
-## **3.2 Wealth Anomaly**
-Detects misalignment between observed assets and plausible legitimate income.
+# 3. Metric Architecture — CI-Core (11 Conceptual Metrics)
 
-### Inputs
-- Property records
-- Corporate affiliations
-- Public financial disclosures
+This section lists the **11 conceptual metric families** that constitute CI-Core. These are described in human terms only; no formulas or computation methods are included.
 
-### Internal Notes
-- Identify outlier purchases vs. declared income
-- Normalize against regional and peer benchmarks
-- Flag opaque beneficial ownership
+## 3.1 Donor Metrics
 
----
+Focus: Patterns in donation behavior that may indicate **concentration, clustering, or unusual donor dynamics**.
 
-## **3.3 Real Estate Patterning**
-Flags real estate behaviors associated with risk:
-- rapid flipping
-- multi-property clusters
-- shell-company transactions
+Examples of conceptual considerations:
 
-### Inputs
-- County/property registries
-- Beneficial-owner mapping
-
-### Internal Notes
-- Track transaction velocity
-- Identify interconnected holding structures
+- whether financial support appears unusually concentrated among a small group,  
+- how donor patterns cluster geographically, professionally, or organizationally,  
+- whether donation flows appear atypical versus a reasonable baseline.
 
 ---
 
-## **3.4 Lobbyist Entanglement**
-Measures intensity and nature of interactions with lobbyists.
+## 3.2 Wealth Anomaly
 
-### Inputs
-- Lobby registration datasets
-- Meeting logs
-- Disclosure forms
+Focus: **Misalignment between observed assets and plausible legitimate income**.
 
-### Internal Notes
-- Weighted for recency
-- Penalizes undisclosed interactions
+Conceptually considers:
 
----
-
-## **3.5 Transactional Appointments**
-Detects appointments that coincide with:
-- donations
-- political favors
-- network obligations
-
-### Internal Notes
-- Graph-based relationship modeling
-- Identify “transactional clusters”
+- publicly observable property holdings,  
+- business affiliations and ownership interests,  
+- declared financial disclosures,  
+- broad alignment between visible assets and expected income bands.
 
 ---
 
-## **3.6 Policy Misalignment Risk**
-Quantifies divergence between:
-- public positions
-- voting/actions
-- donor/lobby alignment
+## 3.3 Real Estate Patterning
 
-### Internal Notes
-- Compare stated vs. observed
-- Detect ideological reversals timed with donations
+Focus: **Real estate behaviors** that conceptually align with elevated risk:
+
+- rapid flipping or short-hold properties,  
+- clustering of properties across entities,  
+- transfers through complex or opaque ownership structures.
 
 ---
 
-## **3.7 Social Ecosystem Alignment Score**
-Measures alignment between a subject and known high-risk actors.
+## 3.4 Lobbyist Entanglement
 
-### Inputs
-- Social/media graph connections
-- Re-posting behavior
-- Endorsements
+Focus: Intensity and nature of **interactions with lobbyists or lobbying entities**.
 
-### Internal Notes
-- Graph centrality + risk-weighted adjacency
+Conceptually considers:
 
----
-
-## **3.8 Personal Conduct Anomalies**
-Identifies personal behavior that correlates with future corruption exposure.
-
-### Inputs
-- Public records
-- Ethics disclosures
-- Repeated minor violations
-
-### Internal Notes
-- Treat as weak signals unless recurring
+- frequency and density of documented interactions,  
+- the extent of ongoing relationships,  
+- transparency of disclosed vs. expected contacts.
 
 ---
 
-## **3.9 Legal Irregularities**
-Flags legal activity indicative of elevated corruption risk.
+## 3.5 Transactional Appointments
 
-### Inputs
-- Civil suits
-- Enforcement actions
-- Regulatory penalties
-- Investigations
+Focus: Appointments or roles that appear to align closely with **donations, favors, or network obligations**.
 
-### Internal Notes
-- Time-weighted decay but never fully zero
+Conceptual questions may include:
+
+- timing of appointments relative to financial or political support,  
+- overlapping relationships across donors, appointees, and decision-makers,  
+- structural patterns that suggest transactional rather than merit-based placement.
 
 ---
 
-## **3.10 Casino License Heuristic**
-Pattern-recognition heuristic for:
-- gambling exposure
-- license holdings
-- casino-related financial behaviors
+## 3.6 Policy Misalignment Risk
 
-### Internal Notes
-- Very effective for identifying hidden financial risk vectors
+Focus: Divergence between:
 
----
+- public positions,  
+- actual voting or decision behavior, and  
+- major sources of financial or political support.
 
-## **3.11 Investigative Pressure Index**
-Measures “heat” from:
-- journalists
-- watchdog groups
-- investigators
-- whistleblower signals
+Conceptual patterns may include:
 
-### Internal Notes
-- Sentiment acceleration
-- Clustering of simultaneous inquiries
+- abrupt changes in policy stance,  
+- divergence from long-held ideological baselines,  
+- alignment shifts that appear correlated with external influences.
 
 ---
 
-# 4. Subsystem Metric Frameworks (Internal)
+## 3.7 Social Ecosystem Alignment Score
 
-This section defines the **metric families used by the four CI subsystems** outside of CI-Core.  
-These subsystems dramatically strengthen the CI project as a platform and significantly broaden the IP footprint.
+Focus: The subject’s **embeddedness in high-risk ecosystems** of relationships and affiliations.
 
-Each subsystem is designed to:
-- use different data sources from CI-Core,
-- serve a different commercial use-case,
-- and produce a distinct output format.
+Conceptually considers:
 
----
-
-# 4.1 CI-Background (Static Due-Diligence)
-
-## Purpose
-Provide a **comprehensive static background report** on a subject, suitable for:
-- research
-- onboarding
-- vetting
-- pre-investigative preparation
-
-## CI-Background Metric Categories
-1. **Identity Integrity**
-    - alias history
-    - name continuity
-    - shell company overlaps
-    - identity anomalies
-
-2. **Employment & Appointment Legitimacy**
-    - rapid role changes
-    - suspicious promotions
-    - board-stacking patterns
-
-3. **Litigation Footprint**
-    - civil suits
-    - regulatory cases
-    - beneficial-owner disputes
-
-4. **Financial Transparency Score**
-    - declared vs. observed assets
-    - opacity of entities
-    - unexplained wealth gaps
-
-5. **Conflict-of-Interest Baseline**
-    - family-owned businesses
-    - advisory roles
-    - overlapping corporate directorships
-
-6. **Known Risk Associations**
-    - ties to high-risk individuals
-    - links to sanctioned persons
-
-7. **Historical Reputation Deviation**
-    - long-term media tone patterns
-    - unresolved controversies
+- public associations with known high-risk individuals or entities,  
+- recurring mutual endorsements or amplifications,  
+- proximity to clusters associated with past corruption exposure.
 
 ---
 
-# 4.2 CI-Watch (Continuous Monitoring)
+## 3.8 Personal Conduct Anomalies
 
-## Purpose
-Provide **real-time or periodic alerts** about emerging corruption-risk signals.
+Focus: Publicly observable **personal behavior patterns** that correlate historically with higher corruption risk.
 
-## CI-Watch Metric Categories
-1. **Event-Driven Wealth Change Alerts**
-    - sudden asset acquisitions
-    - large debt extinguishments
+Examples might include:
 
-2. **New Entity Formation Activity**
-    - LLCs
-    - nonprofits
-    - trust structures
-
-3. **Lobbying Signals (Real-Time)**
-    - meeting logs
-    - new engagements
-
-4. **Policy-Shift Divergence Alerts**
-    - abrupt reversals
-    - deviation from baseline ideology
-
-5. **Sudden Legal Exposure**
-    - new investigations
-    - new regulatory actions
-
-6. **Network Rewiring**
-    - new partnerships
-    - new board overlaps
-    - emergent clusters
-
-7. **Media Velocity Breakouts**
-    - spikes in mentions
-    - concentrated negative tone
-
-8. **Travel / Scheduling Anomalies**
-    - repeated closed-door meetings
-    - high-risk travel patterns
-
-9. **Donor Cluster Movements (Short-Term)**
-    - synchronized donor activity
-
-10. **Investigative Noise Index (Daily)**
-- journalist activity spikes
-- watchdog clustering
+- repeated minor ethics violations,  
+- patterns of rule-bending or boundary-testing,  
+- recurring integrity-related incidents over time.
 
 ---
 
-# 4.3 CI-Screen (Lightweight Rapid Filter)
+## 3.9 Legal Irregularities
 
-## Purpose
-A **low-cost, fast-turnaround vetting tool** for employment, campaign staffing, board appointments, and volunteer positions.
+Focus: Legal events that are conceptually associated with elevated corruption risk, such as:
 
-## CI-Screen Metric Categories
-1. **Recent Litigation Flags (Last 5 Years)**
-2. **Disclosure Discrepancies**
-3. **High-Risk Network Links**
-4. **Prior Conflict-of-Interest Incidents**
-5. **Career Gap Anomalies**
-6. **Sanctions & Watchlist Checks**
-
-**Designed for red/yellow/green output only.**
+- regulatory enforcement actions,  
+- civil suits with integrity implications,  
+- patterns of investigation or sanctions.
 
 ---
 
-# 4.4 CI-Monitor (Long-Term Pattern Tracking)
+## 3.10 Casino License Heuristic
 
-## Purpose
-Detect **slow-moving corruption trends** over years or decades.
+Focus: A conceptual heuristic related to **gambling exposure, license holdings, and casino-related financial behaviors**, reflecting potential risk vectors tied to these domains.
 
-## CI-Monitor Metric Categories
-1. **Long-Arc Wealth Drift**
-    - multi-year asset expansion
-    - unexplained growth curves
-
-2. **Policy Consistency Curves**
-    - ideological stability vs. donor pressure
-
-3. **Donor & Influence Convergence Over Time**
-    - concentration of donors and backers
-
-4. **Network Centrality Shifts**
-    - rising or declining influence
-
-5. **Legal Heatmap (Long-Term)**
-    - persistent legal “background radiation”
-
-6. **Real Estate Accretion Trends**
-    - slow aggregation of properties
-
-7. **Reputation Gravitation Index**
-    - long-cycle sentiment movement
-
-8. **Compliance Drift Score**
-    - pattern of increasingly risky behavior
+This is presented as a **specialized, narrow-scope metric family**.
 
 ---
 
-# 5. Data Source & API Map
+## 3.11 Investigative Pressure Index
 
-This section provides the canonical **Metric → Data Source → API** table.  
-This is important for IP protection because it documents the *specific structural mapping* of the CI system.
+Focus: The level of **sustained attention and scrutiny** from:
 
-The table below includes CI-Core metrics and subsystem categories.
+- journalists,  
+- watchdog organizations,  
+- regulators and investigators,  
+- public-interest advocates.
 
----
+Conceptually considers:
 
-## 5.1 Metric → Data Source → API Table
-
-| Metric / Category | Data Source | API / Access Method | Notes |
-|------------------|-------------|----------------------|-------|
-| Donor Metrics | FEC Filings, State Registries | FEC API, OpenSecrets API | Includes donor clustering and HHI analysis |
-| Wealth Anomaly | Property Records, Financial Disclosures | County APIs, Public Asset Registries | Compare observed vs. declared assets |
-| Real Estate Patterning | Deeds, Transfers, LLC Registries | County Clerk APIs | Detect shell transfers, rapid flipping |
-| Lobbyist Entanglement | Lobby Disclosures | Senate Lobbying Disclosure API | Interaction intensity, recency |
-| Transactional Appointments | Appointments, Boards, PAC Data | GovTrack API, OpenGov | Graph-based detection |
-| Policy Misalignment Risk | Voting Records, Policy Statements | GovTrack, ProPublica Congress API | Detect reversals aligned with donations |
-| Social Ecosystem Alignment | Social Graph, Media Links | Twitter/X API, YouTube API | Risk-weighted centrality |
-| Personal Conduct Anomalies | Public Records | Court Record APIs | Weak signals unless repeated |
-| Legal Irregularities | Civil/Criminal Filings | CourtListener API | Regulatory investigations |
-| Casino License Heuristic | Gaming Licenses | State Gaming Regulatory APIs | Risk-indicator heuristic |
-| Investigative Pressure Index | Watchdog Activity, Journalists | GDELT API, MediaCloud | Sentiment velocity and clustering |
-| Identity Integrity (Background) | Corporate Registries | OpenCorporates API | Alias continuity |
-| Litigation Footprint (Background) | Court Records | CourtListener | Cases & violations |
-| Financial Transparency (Background) | Disclosures | State Ethics APIs | Compare declared vs. observed |
-| Event-Driven Alerts (Watch) | Property, Donor, Lobby Data | FEC, County APIs | For CI-Watch alerts |
-| Network Rewiring (Watch) | Directorships, Boards | LittleSis API | Graph changes |
-| Reputation Drift (Monitor) | Media Archives | GDELT, MediaCloud | Multi-year sentiment |
+- intensity and persistence of scrutiny,  
+- clustering of independent inquiries,  
+- acceleration or deceleration of investigative focus.
 
 ---
 
-# 6. Normalization Strategy (Internal Only)
+# 4. Subsystem Metric Frameworks (Conceptual)
 
-Normalization is essential to prevent noise, ensure comparability, and create a **unitless, dimensionless risk signal** for every metric.
+Beyond CI-Core, each subsystem is associated with **its own conceptual metric families**. These are designed to serve different use-cases while remaining consistent with CI’s overall philosophy.
 
-This is a **high-level strategy** sufficient for IP defensibility.
+## 4.1 CI-Background (Static Due-Diligence)
 
----
+### Purpose
 
-## 6.1 Cross-Metric Normalization
-All raw metric values are transformed into **0–100 normalized risk scores** using:
-- modified z-scores,
-- log compression for heavy-tailed distributions,
-- percent-rank normalization for categorical inputs.
+To produce a **static, context-rich background profile**.
 
----
+### Conceptual Metric Categories
 
-## 6.2 Temporal Normalization
-Event-driven metrics decay over time:
-- exponential decay
-- recency weighting
-- different decay constants for each metric family
+1. **Identity Integrity**  
+   - alias continuity,  
+   - identity anomalies,  
+   - overlaps with shell or opaque entities.
 
-Example: legal events decay slower than media events.
+2. **Employment & Appointment Legitimacy**  
+   - role stability,  
+   - unusual promotions or placements,  
+   - patterns of board or committee stacking.
 
----
+3. **Litigation Footprint**  
+   - presence and nature of civil/regulatory cases,  
+   - patterns in historic disputes.
 
-## 6.3 Weight Class Hierarchy
-Metrics fall into three weight classes:
-- **High-Impact Metrics (30–40%)**
-- **Mid-Impact Metrics (10–20%)**
-- **Low-Impact Metrics (5–10%)**
+4. **Financial Transparency Framing**  
+   - clarity of declared vs. observed assets,  
+   - opacity of ownership structures.
 
-CI-Core uses a mixed-class weight structure.
+5. **Conflict-of-Interest Baseline**  
+   - family businesses,  
+   - advisory roles,  
+   - overlapping corporate or organizational interests.
 
----
+6. **Known Risk Associations**  
+   - connections to individuals or entities already associated with significant risk.
 
-## 6.4 Noise Filtering
-To prevent signal distortion:
-- require repeated observations for weak signals
-- ignore single anomalous data points
-- apply cluster confirmation on network-related metrics
-
----
-
-## 6.5 Distortion Risk Guardrails
-Guardrails include:
-- baseline vs. delta comparison
-- avoid double-counting overlapping signals
-- enforce metric independence where possible
-- detect tautologies (e.g., donor networks + donor concentration)
-
-Documenting these guardrails provides IP protection against misuse or misinterpretation.
+7. **Historical Reputation Deviation**  
+   - long-term media framing and unresolved controversies.
 
 ---
 
-# 7. Scoring Engine Architecture
+## 4.2 CI-Watch (Continuous Monitoring)
 
-This section defines the internal pipeline used to ingest data, compute metric signals, normalize them, and produce subsystem scores and the CI-Core composite.
+### Purpose
 
-It is intentionally detailed enough to support IP defensibility while not exposing proprietary formulas verbatim.
+To surface **emerging or changing risk signals** over time.
 
----
+### Conceptual Metric Categories
 
-## 7.1 Overview of Scoring Pipeline
-The engine consists of six stages:
+1. **Event-Driven Wealth Change Signals**  
+   - sudden changes in visible asset patterns.
 
-1. **Data Ingestion Layer**
-2. **Preprocessing & Transformation**
-3. **Metric Computation**
-4. **Normalization & Weighting**
-5. **Aggregation to Subsystem Outputs**
-6. **CI-Core Final Score Assembly**
+2. **New Entity Formation Activity**  
+   - creation of new organizations, vehicles, or structures.
 
-Each stage is independent, testable, and version-controlled.
+3. **Lobbying & Influence Activity (Current)**  
+   - new or intensified lobbying interactions.
 
----
+4. **Policy-Shift Divergence**  
+   - abrupt changes in policy behavior vs. prior baseline.
 
-## 7.2 Stage 1 — Data Ingestion Layer
+5. **New Legal Exposure**  
+   - new investigations or regulatory attention.
 
-### Input Types
-- Numeric data (donation amounts, asset values)
-- Categorical data (sanction status, license status)
-- Graph-based inputs (network relationships)
-- Textual inputs (media references, sentiment signals)
-- Time-series data (policy changes, donation flows)
+6. **Network Rewiring**  
+   - rapid emergence or dissolution of key relationships.
 
-### Ingestion Methods
-- Pull-based APIs
-- Push webhooks (where available)
-- Batch scraping of public registries
-- Scheduled data refresh (daily/weekly/monthly)
+7. **Media Velocity & Attention Surges**  
+   - spikes in coverage or thematic clustering around certain topics.
 
-### Metadata
-All ingested data includes:
-- timestamp
-- source
-- source URL
-- hash for integrity verification
+8. **Donor Cluster Movements**  
+   - short-term shifts in donor coalitions.
 
 ---
 
-## 7.3 Stage 2 — Preprocessing & Transformation
+## 4.3 CI-Screen (Lightweight Rapid Filter)
 
-### Cleaning
-- remove duplicates
-- normalize names/entities
-- address alias resolution
-- standardize numeric precision
+### Purpose
 
-### Entity Linking
-Link the subject to:
-- directorships
-- donors
-- real estate properties
-- legal cases
-- lobbying interactions
+To provide **quick, coarse-grained screening** for lower-stakes or higher-volume decisions.
 
-### Graph Construction
-A subject-specific graph is built for:
-- donor clusters
-- lobbyist networks
-- board overlaps
-- social/media ecosystems
+### Conceptual Metric Categories
 
-Graph centrality measures (degree, betweenness, eigenvector) are computed here (not in the metric stage).
+1. **Recent Litigation & Regulatory Flags**  
+2. **Disclosure and Transparency Anomalies**  
+3. **High-Risk Network Links (Basic Pass)**  
+4. **Prior Conflict-of-Interest Incidents**  
+5. **Career Gap or Role Anomalies**  
+6. **Sanctions & Watchlist Hits**
+
+CI-Screen conceptually favors **simple qualitative outcomes** (e.g., low / moderate / elevated concern), rather than detailed scoring.
 
 ---
 
-## 7.4 Stage 3 — Metric Computation
+## 4.4 CI-Monitor (Long-Term Pattern Tracking)
 
-Each metric receives:
-- cleaned inputs
-- resolved entities
-- optional graph-preprocessed values
+### Purpose
 
-Metrics then compute **raw scores** using internal logic such as:
-- clustering coefficients
-- delta patterns over time
-- HHI concentration
-- recency scaling
-- adjacency-based risk scoring
+To highlight **slow-moving patterns and structural drift**.
 
-Raw scores remain **unbounded** until normalization.
+### Conceptual Metric Categories
 
----
-
-## 7.5 Stage 4 — Normalization & Weighting
-
-Every metric is transformed to a 0–100 range via:
-- z-score normalization
-- log compression
-- percentile ranking
-- min/max bounding
-- decayed historical weighting
-
-The metric’s **weight class** is then applied.
+1. **Long-Horizon Wealth Drift**  
+2. **Policy Consistency Over Time**  
+3. **Donor & Influence Convergence**  
+4. **Network Centrality & Power Migration**  
+5. **Persistent Legal or Regulatory “Background Noise”**  
+6. **Real Estate Accretion Trends**  
+7. **Reputation Gravitation (Long-Cycle)**  
+8. **Compliance Drift Patterns**
 
 ---
 
-## 7.6 Stage 5 — Subsystem Output Profiles
+# 5. Conceptual Data Source Map
 
-Each subsystem produces a distinct profile:
+This section describes, at a high level, **what types of public data** are envisioned as inputs to CI. It does not specify particular APIs, endpoints, or technical integrations.
 
-### **CI-Background Output**
-- static report
-- identity, litigation, transparency, conflict-of-interest
+## 5.1 Metric Family → Data Category (Conceptual)
 
-### **CI-Watch Output**
-- rolling alerts
-- dashboards
-- time-series anomaly feeds
+| Metric / Category              | Primary Data Category                          |
+|--------------------------------|-----------------------------------------------|
+| Donor Metrics                  | Campaign-finance and donation disclosures     |
+| Wealth Anomaly                 | Property records, asset disclosures           |
+| Real Estate Patterning         | Deeds, transfers, ownership registries        |
+| Lobbyist Entanglement          | Lobbying and influence disclosures            |
+| Transactional Appointments     | Appointment records, organizational roles     |
+| Policy Misalignment Risk       | Voting records, policy positions, public statements |
+| Social Ecosystem Alignment     | Public association and network information    |
+| Personal Conduct Anomalies     | Public records and ethics disclosures         |
+| Legal Irregularities           | Court records, regulatory and enforcement actions |
+| Casino License Heuristic       | Gaming and license-related public registries  |
+| Investigative Pressure Index   | Public investigations, watchdog/journalistic focus |
+| CI-Background Categories       | Corporate, professional, litigation, and disclosure registries |
+| CI-Watch Alerts                | Time-based changes in the above categories    |
+| CI-Screen Checks               | Summary signals from litigation, sanctions, and disclosure integrity |
+| CI-Monitor Patterns            | Long-term historical patterns from the above sources |
 
-### **CI-Screen Output**
-- binary or ternary flags (red/yellow/green)
-
-### **CI-Monitor Output**
-- long-term drift graphs
-- slow-wave indicators
-
-All subsystems are generated **before** CI-Core to ensure independence.
-
----
-
-## 7.7 Stage 6 — CI-Core Final Score Assembly
-
-### Weighted Aggregation Model
-The final CI-Core score:
-- aggregates normalized metric scores
-- applies metric-specific weights
-- applies subsystem-independent adjustments
-
-### Risk Bands
-The final numerical score is placed into risk bands:
-- **0–19:** Very Low
-- **20–39:** Low
-- **40–59:** Moderate
-- **60–79:** High
-- **80–100:** Severe
-
-Risk bands are used for interpretation, not scoring.
+Actual technical methods, APIs, and integration details are **deliberately omitted**.
 
 ---
 
-# 8. Security, Ethics, and Abuse Prevention
+# 6. Conceptual Normalization & Aggregation (High-Level Only)
 
-Because CI deals with public-figure analytics, certain ethical and operational guardrails are mandatory.
+In any future implementation, CI envisions:
 
-This section also strengthens IP claims by defining the responsible-use framework.
+- **Bringing heterogeneous inputs onto a common conceptual scale**,  
+- Avoiding over-reliance on any single metric,  
+- Taking into account **recency, repetition, and context**,  
+- Producing **interpretable ranges** or bands of concern, not hard labels.
+
+Specific mathematical transformations, weighting strategies, and aggregation methods are **not described in this public document**.
+
+---
+
+# 7. Conceptual Scoring Flow (Non-Technical)
+
+At a high level, a notional CI-inspired process might look like:
+
+1. **Collect Public Data**  
+   From legally accessible public records, disclosures, and media.
+
+2. **Associate Data with a Subject**  
+   Resolve identity, connect related records, and provide contextual grouping.
+
+3. **Evaluate Metric Families Conceptually**  
+   Consider each metric category as a separate risk lens (e.g., donors, legal exposure, network patterns).
+
+4. **Summarize Signals**  
+   For each metric family, derive a conceptual signal indicating low, moderate, or elevated concern.
+
+5. **Combine into Higher-Level Views**  
+   Subsystems (Background, Watch, Screen, Monitor) each present their own perspective.  
+   CI-Core and CI Score™ conceptually represent a combined, multi-dimensional view.
+
+Details of how this would be implemented, calculated, or operationalized are **intentionally withheld**.
 
 ---
 
-## 8.1 Security Principles
+# 8. Security, Ethics, and Misuse Prevention (Conceptual Framework)
 
-### Authentication & Authorization
-- API keys
-- user access tiers
-- audit logs
+## 8.1 Security & Data Integrity Principles
 
-### Data Protection
-- hashing of data sources
-- encrypted storage of sensitive metadata
-- verified provenance
+Any future implementation of CI-inspired ideas should:
 
-### Anti-Tampering
-- version-locking each metric
-- reproducible scoring environment
-
----
+- use only **lawful, public, and ethically sourced data**,  
+- maintain clear **source attribution** and documentation,  
+- provide appropriate protections for sensitive or borderline contexts,  
+- ensure that system usage is **logged and auditable**.
 
 ## 8.2 Ethics & Fairness Guidelines
 
-1. **Transparency:**  
-   A user must be able to understand why a score went up or down.
+Core ethical principles for the CI framework include:
 
-2. **No Predictive Claims:**  
-   CI measures **risk exposure**, not criminal likelihood.
+1. **Transparency of Reasoning**  
+   Users should understand conceptually *why* a given signal appears elevated.
 
-3. **Anti-Bias Controls:**
-    - no demographic variables
-    - no protected-class inputs
-    - no sentiment weighting based on identity categories
+2. **Non-Predictive Use**  
+   CI should be framed as a **risk-pattern framework**, not as a predictor of crimes or outcomes.
 
-4. **Source Integrity:**  
-   Only public, legally accessible sources are used.
+3. **Protection Against Bias**  
+   The framework should avoid using protected characteristics or demographic variables as inputs.
 
-5. **Proportionate Interpretation:**  
-   Weak signals are never interpreted as strong findings unless repeated.
+4. **Context and Proportionality**  
+   Single, isolated events should not be overinterpreted; repeated and corroborated patterns matter more than one-off anomalies.
 
----
+5. **Respect for Legitimate Due Process**  
+   CI-related outputs should not be seen as proof of wrongdoing, but as starting points for responsible analysis or oversight.
 
-## 8.3 Anti-Gaming Measures
+## 8.3 Misuse Prevention
 
-- detect anomalous data removal
-- detect sudden donation “whitewashing”
-- identify graph-disrupting attempts
-- compare historical vs. current entity structures
+CI should **not** be used for:
 
-These measures help maintain systemic integrity.
+- harassment or political retaliation,  
+- targeting private individuals,  
+- disinformation or smear campaigns,  
+- bypassing legal or ethical standards of due process.
 
----
-
-## 8.4 Misuse Prevention
-
-CI should not be used for:
-- personal vendettas
-- non-public individuals
-- harassment
-- disinformation campaigns
-
-Any enterprise-facing product includes clear usage guidelines and disclaimers.
+Any real-world implementation should incorporate safeguards, usage policies, and oversight.
 
 ---
 
-# 9. Implementation Notes (Internal)
+# 9. Public-Facing Roadmap (Conceptual)
 
-This section describes how a development team should structure the initial MVP and subsequent versions.
+This roadmap is **conceptual only** and describes how the CI framework might evolve as a documentation and research effort.
 
----
+## 9.1 Near-Term Documentation Goals
 
-## 9.1 Git Repository Structure (Recommended)
+- Continue refining the conceptual descriptions of metrics and subsystems.  
+- Publish additional **non-technical whitepapers** and explainers.  
+- Add visual diagrams explaining how CI views *patterns* rather than individuals.  
+- Provide more public-facing material on **ethics, limitations, and appropriate use**.
 
-```
-/ci-project
-   /docs
-      CI_DESIGN_DOCUMENT_V1.0_INTERNAL.md
-   /core
-      /metrics
-      /normalization
-      /scoring
-   /subsystems
-      /background
-      /watch
-      /screen
-      /monitor
-   /data-ingestion
-   /api
-   /ui
-```
+## 9.2 Potential Future Directions (Non-Binding)
 
-This structure makes each subsystem an independent module.
+- Collaboration with researchers and academics on corruption-risk modeling as a **field of study**.  
+- Development of educational materials for journalists and public-interest organizations.  
+- Creation of synthetic, hypothetical case studies to illustrate how risk patterns might be interpreted in practice (without scoring real individuals).
+
+These directions are speculative and do not describe a committed product roadmap.
 
 ---
 
-## 9.2 Minimum Viable Formula Architecture
+# 10. Public Use and Interpretation
 
-The MVP should include:
-- donor metrics
-- one normalized metric
-- simple aggregation
-- minimal UI displaying CI-Core
+This design document:
 
-This establishes the first functional prototype needed for IP recognition.
+- is **not** a rating of any specific person or entity,  
+- does **not** provide scores,  
+- does **not** include case studies,  
+- does **not** disclose implementation details,  
+- is entirely conceptual and illustrative.
 
----
-
-## 9.3 API Interaction Patterns
-
-### Pull APIs
-- scheduled cron jobs
-- periodic refreshing
-- daily donor/asset updates
-
-### Push APIs (where supported)
-- incoming event notifications
-- entity updates
+Readers should interpret CI as a **framework for thinking** about corruption risk, not as a finished or deployed system.
 
 ---
 
-## 9.4 Versioning Strategy
+# 11. Closing Notes
 
-- **v1.x:** metric architecture and core logic
-- **v2.x:** subsystem dashboards
-- **v3.x:** advanced graph analytics
-- **v4.x:** machine-assisted recommendations
+The Corruptibility Index (CI) and CI Score™ are intended to:
 
-Version locking prevents later disputes over “what was invented when.”
+- stimulate **serious, structured thinking** about institutional risk,  
+- provide a conceptual foundation for **future research**,  
+- encourage more **data-aware transparency practices**, and  
+- highlight the importance of **context, nuance, and ethics** in any risk-related analysis.
 
----
-
-## 9.5 Engineering Notes
-
-- use type-safe models (Java/Kotlin recommended)
-- separate domain objects from metric-calculation logic
-- maintain full test coverage for each metric
-- treat the scoring engine as a pure function of inputs
-
-This ensures reproducibility for legal defensibility.
+All technical details, including code, algorithms, formulas, and operational systems, remain **strictly internal** and are **not** part of this public document.
 
 ---
 
-# 10. Roadmap
-
-This section defines the strategic milestones for the CI platform.  
-It supports IP claims by documenting the intended evolution of the system, demonstrating that the subsystems and advanced features were part of the foundational vision.
-
----
-
-## 10.1 Phase 1 — MVP (Q1–Q2)
-
-### Objectives
-- Implement core ingestion pipeline
-- Deliver one functioning normalized metric (Donor Metrics recommended)
-- Compute preliminary CI-Core output
-- Implement basic UI
-- Deploy to private Git repo
-
-### Outcomes
-- Establishes “working prototype” status for IP purposes
-- Creates foundation for investor presentations
-- Demonstrates feasibility of normalized scoring logic
-
----
-
-## 10.2 Phase 2 — Core Expansion (Q2–Q3)
-
-### Objectives
-- Complete all 11 CI-Core metrics
-- Implement normalization strategy
-- Apply final weight classes
-- Build full CI-Core scoring engine
-- Publish developer documentation
-
-### Outcomes
-- Fully functional CI-Core
-- Score reproducibility
-- Initial outreach to partners
-
----
-
-## 10.3 Phase 3 — Subsystem Activation (Q3–Q4)
-
-### CI-Background
-- static due-diligence report generator
-- entity integrity checks
-
-### CI-Screen
-- lightweight hiring/appointment vetting
-- R/Y/G output
-
-### CI-Watch
-- scheduled monitoring
-- alerting framework
-
-### CI-Monitor
-- long-term drift visualization
-
-### Outcomes
-- CI becomes a **platform** with multiple product lines
-- Strong defensibility in trademark filings for subsystem names
-
----
-
-## 10.4 Phase 4 — Dashboard & Visualization Layer (Q4–Q1 Next Year)
-
-### Objectives
-- CI-Watch dashboard
-- CI-Monitor drift graphs
-- Profile pages for individuals
-- Alert explanations and drilldowns
-
----
-
-## 10.5 Phase 5 — Advanced Analytics (Future)
-
-### Possible features
-- cluster-based risk recommendations
-- patterns-of-life style analysis
-- long-term donor ecosystem predictions
-- graph embeddings for network risk
-
-These are optional but forward-looking.
-
----
-
-# 11. Appendices
-
-This appendix documents underlying structures, schemas, and pseudocode patterns.  
-These are not full implementations but serve to further solidify the architectural originality of the CI platform.
-
----
-
-# 11.1 Entity Definitions
-
-### **Subject**
-```
-id  
-name  
-aliases[]  
-positions[]  
-disclosures[]  
-network_nodes[]  
-properties[]  
-legal_events[]  
-donor_events[]  
-lobby_events[]  
-sentiment_timeseries[]  
-```
-
-### **DonorEvent**
-```
-donor_name  
-amount  
-date  
-source  
-cluster_id  
-```
-
-### **PropertyRecord**
-```
-parcel_id  
-purchase_price  
-purchase_date  
-owner_entity  
-previous_owner  
-```
-
-### **LegalEvent**
-```
-case_id  
-type  
-severity  
-date  
-status  
-```
-
----
-
-# 11.2 Example Metric Pseudocode (High-Level)
-
-### 11.2.1 Donor Concentration (Raw Score)
-```
-function donorConcentration(events):
-    donors = extractUniqueDonors(events)
-    total = sum(events.amount)
-    hhi = 0
-    for donor in donors:
-        share = sum(donor.amount) / total
-        hhi += share * share
-    return hhi
-```
-
-### 11.2.2 Real Estate Velocity Heuristic
-```
-function realEstateVelocity(records):
-    sorted = sortByDate(records)
-    flips = 0
-    for i in 0..len(sorted)-2:
-        if sorted[i+1].purchase_date - sorted[i].purchase_date < threshold:
-            flips += 1
-    return flips
-```
-
-### 11.2.3 Investigative Pressure Index Kernel
-```
-function investigativePressure(mediaEvents):
-    velocity = derivative(mediaEvents.count_per_day)
-    acceleration = derivative(velocity)
-    score = weightedSum(velocity, acceleration)
-    return score
-```
-
-These examples show the computation patterns without revealing full formulas.
-
----
-
-# 11.3 Normalization Example Pattern
-```
-function normalize(rawValue, distribution):
-    z = (rawValue - distribution.mean) / distribution.std
-    bounded = 1 / (1 + exp(-z))     // logistic compression
-    return bounded * 100
-```
-
----
-
-# 11.4 ERD (Textual Representation)
-
-### High-Level Entity Relationship Diagram
-```
-Subject
-   |-- DonorEvent (many)
-   |-- PropertyRecord (many)
-   |-- LegalEvent (many)
-   |-- LobbyEvent (many)
-   |-- SentimentSignal (many)
-   |-- NetworkNode (many)
-```
-
-This establishes the relational architecture.
-
----
-
-# 11.5 Risk Class Definitions
-
-### **High-Impact Metrics**
-- Wealth Anomaly
-- Transactional Appointments
-- Policy Misalignment Risk
-
-### **Mid-Impact Metrics**
-- Donor Metrics
-- Legal Irregularities
-- Social Ecosystem Alignment
-
-### **Low-Impact Metrics**
-- Personal Conduct Anomalies
-- Casino License Heuristic
-
-These definitions support consistent scoring and interpretation.
-
----
-
-# 12. Donor Metrics MVP Prototype (V1.0)
-
-### 12.1 Purpose
-
-The Donor Metrics MVP prototype provides the first executable implementation of a CI metric. It demonstrates the full pipeline from structured input, through normalization and weighted scoring, to human-readable output. This prototype establishes the initial reduction-to-practice of the CI architecture and forms the foundation for implementing additional metrics.
-
----
-
-### 12.2 Implementation Overview
-
-The MVP is implemented as a minimal Java/Gradle console application with the following components:
-
-- **Language / Build System:** Java with Gradle (Kotlin DSL)
-- **Package Root:** `com.ci`
-- **Key Classes:**
-    - `com.ci.metrics.DonorMetricsRaw`
-    - `com.ci.metrics.DonorMetricsScorer`
-    - `com.ci.mvp.DonorMetricsMvpRunner`
-- **Sample Input File:** `src/main/resources/donor_metrics_sample.json`
-
-Execution flow:
-
-1. Load donor-related JSON data from the resources directory.
-2. Deserialize JSON into a typed Java object (`DonorMetricsRaw`).
-3. Normalize and weight donor-related features.
-4. Compute:
-    - a 0–1 normalized donor risk, and
-    - a 0–100 Donor Metrics component score.
-5. Print the results to the console for inspection.
-
----
-
-### 12.3 Input Data Model
-
-The `DonorMetricsRaw` class represents the raw donor-related features used in the MVP:
-
-- **donorConcentrationHHI (double)**  
-  Herfindahl–Hirschman Index value between 0 and 10,000. Higher values indicate stronger concentration among fewer donors.
-
-- **donationEvents (int)**  
-  Total number of recorded donation events over a defined period.
-
-- **donorClusterScore (double)**  
-  Pre-normalized 0–1 score representing donor clustering by geography, industry, or other shared attributes.
-
-Sample JSON used by the MVP:
-
-    {
-      "donorConcentrationHHI": 7200,
-      "donationEvents": 340,
-      "donorClusterScore": 0.82
-    }
-
-This file is stored at:
-
-- `src/main/resources/donor_metrics_sample.json`
-
----
-
-### 12.4 Normalization and Scoring Logic
-
-The `DonorMetricsScorer` performs feature scaling and weighted aggregation.
-
-**Feature scaling (all values clamped to [0, 1]):**
-
-- `hhiRisk = clamp(donorConcentrationHHI / 10000)`
-- `eventsRisk = clamp(donationEvents / 100)`
-- `clusterRisk = clamp(donorClusterScore)`
-
-**Weighted aggregation formula:**
-
-    donorRisk_0to1 =
-        0.50 * hhiRisk +
-        0.30 * clusterRisk +
-        0.20 * eventsRisk
-
-The final donor risk value `donorRisk_0to1` is clamped to the range [0, 1].
-
-**Score conversion:**
-
-- `donorScore_0to100 = round(donorRisk_0to1 * 100)`
-
-This produces the final **Donor Metrics CI component score** on a 0–100 scale.
-
----
-
-### 12.5 Runtime Behavior
-
-`DonorMetricsMvpRunner` performs the following at runtime:
-
-1. Loads `donor_metrics_sample.json` from the classpath.
-2. Uses Jackson’s `ObjectMapper` to deserialize the JSON into a `DonorMetricsRaw` instance.
-3. Passes the object into `DonorMetricsScorer` to compute the normalized risk and component score.
-4. Prints the results to standard output.
-
-Example console output:
-
-    === Donor Metrics MVP (JSON) ===
-    Raw input: DonorMetricsRaw{donorConcentrationHHI=7200.0, donationEvents=340, donorClusterScore=0.82}
-    Normalized donor risk (0–1): 0.8xx
-    Donor Metrics CI component score (0–100): 8x
-
-This confirms the end-to-end operation of the MVP pipeline.
-
----
-
-### 12.6 Architectural Significance
-
-The Donor Metrics MVP:
-
-- Demonstrates a complete, functioning CI metric pipeline.
-- Establishes the pattern for implementing the remaining CI metrics.
-- Provides a concrete example of raw feature ingestion, normalization, weighting, and scoring.
-- Creates a traceable link between the design document and runnable code.
-- Lays the groundwork for real data integrations (e.g., FEC APIs, third-party datasets) in future versions.
-
----
-
-### 12.7 IP and Versioning Note
-
-The Donor Metrics MVP prototype has been committed and timestamped in the CI repository alongside this design document. Its presence:
-
-- Demonstrates reduction-to-practice of the Donor Metrics concept.
-- Provides cryptographically verifiable authorship and priority via Git history.
-- Establishes the CI system as an identifiable intellectual property asset.
-- Forms part of the canonical V1.0 architecture and implementation baseline.
-
-This section completes the V1.0 documentation of the Donor Metrics component and provides the reference implementation pattern for additional metric modules.
-
----
-
-# 13 Disclaimer
-
-This design document is not intended to produce public policy judgments or legal determinations.  
-It describes an analytical risk-scoring system using publicly available information and is intended for research, editorial, compliance-support, and investigative-preparation purposes only.
-
----
-
-# End of CI_DESIGN_DOCUMENT_V1.0.md
-**Author: John Forrester**  
-**Status: Locked for IP Protection**  
-**Version: 1.0**
-
-
-
-
-
-
+© 2025 The Corruptibility Index™ and CI Score™. All Rights Reserved.  
+This document is provided for conceptual, educational, and research discussion purposes only.
